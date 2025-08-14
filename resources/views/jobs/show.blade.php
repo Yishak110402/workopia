@@ -76,14 +76,47 @@
                         </p>
                     </div>
                 @endif
-                <p class="my-5">
-                    Put "Job Application" as the subject of your email
-                    and attach your resume.
-                </p>
-                <a href="mailto:{{ $job->contact_email }}"
-                    class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
-                    Apply Now
-                </a>
+
+                @auth
+                    <p class="my-5">
+                        Put "Job Application" as the subject of your email
+                        and attach your resume.
+                    </p>
+                    <div x-data="{ open: false }">
+                        <button @click="open=true"
+                            class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">Apply
+                            Now</button>
+                        <div x-show="open"
+                            class="fixed inset-0 flex items-center justify-center bg-gray-900/50 bg-opacity-50">
+                            <div @click.away="open=false" class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+                                <h3 class="text-lg font-semibold mb-4">Apply For {{ $job->title }}</h3>
+                                <form enctype="multipart/form-data" method="POST"
+                                    action="{{ route('applicants.store', $job->id) }}">
+                                    @csrf
+                                    <x-inputs.text-input :required="true" name="full_name" id="full_name"
+                                        label="Full Name" />
+                                    <x-inputs.text-input :required="false" name="contact_phone" id="contact_phone"
+                                        label="Contact Phone" />
+                                    <x-inputs.text-input :required="true" name="contact_email" id="contact_email"
+                                        label="Contact Email" />
+                                    <x-inputs.text-area-input id="message" label="Message" name="message" />
+                                    <x-inputs.text-input :required="true" name="location" id="location"
+                                        label="Location" />
+                                    <x-inputs.file-input id='resume' name="resume" label="Upload your resume(PDF)"
+                                        :required="true" />
+                                    <button type="submit"
+                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Apply</button>
+                                    <button @click="open=false"
+                                        class="bg-gray-500 hover:bg-gray-600 text-black px-4 py-2 rounded-md">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <p class="my-5 bg-gray-300 rounded p-3">
+                        You must be logged in to apply for the job
+                    </p>
+                @endauth
 
             </div>
 
@@ -113,18 +146,18 @@
                     method="POST">
                     @csrf
                     @if (auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists())
-                    @method('DELETE')
-                    <button
-                    class="bg-red-500 hover:bg-red-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center mt-5"
-                    type='submit'>
-                    <i class="fas fa-bookmark mr-3"></i> Remove Bookmark
-                </button> 
+                        @method('DELETE')
+                        <button
+                            class="bg-red-500 hover:bg-red-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center mt-5"
+                            type='submit'>
+                            <i class="fas fa-bookmark mr-3"></i> Remove Bookmark
+                        </button>
                     @else
-                    <button
-                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center mt-5"
-                        type='submit'>
-                        <i class="fas fa-bookmark mr-3"></i> Bookmark Listing
-                    </button>                        
+                        <button
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center mt-5"
+                            type='submit'>
+                            <i class="fas fa-bookmark mr-3"></i> Bookmark Listing
+                        </button>
                     @endif
                 </form>
             @else
