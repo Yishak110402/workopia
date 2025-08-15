@@ -23,6 +23,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+    Route::get("/jobs/search", [JobController::class, 'search'])->name('jobs.search');
     Route::post("/jobs", [JobController::class, "store"]);
     Route::get("/jobs/create", [JobController::class, "create"]);
     Route::get("/jobs/edit/{job}", [JobController::class, 'edit'])->name('jobs.edit');
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/bookmarks/{job}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
 
     Route::post("/jobs/{job}/apply", [ApplicantController::class, 'store'])->name("applicants.store");
+    Route::delete("/applicants/{applicant}",[ApplicantController::class, 'destroy'])->name('applicants.destroy');
 });
 
 Route::get("/jobs", [JobController::class, "index"])->name('jobs.index');

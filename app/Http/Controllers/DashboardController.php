@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function index(){
         $user = Auth::user();
-        $jobs = Job::where('user_id',$user->id)->get();
+        $jobs = Job::where('user_id',$user->id)->with('applicants')->get();
         return view('dashboard.index',[
             'user'=>$user,
             'jobs'=>$jobs

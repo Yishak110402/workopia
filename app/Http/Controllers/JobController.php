@@ -121,10 +121,35 @@ class JobController extends Controller
          Storage::delete('public/logos' . basename($job->company_logo));
       }
       $job->delete();
-      if($request->query('from')=='dashboard'){
+      if ($request->query('from') == 'dashboard') {
          return redirect(route('dashboard'))->with('success', "Job Listing Deleted Successfully");
       }
 
       return redirect(route('jobs.index'))->with('success', "Job Listing Deleted Successfully");
+   }
+   public function search(Request $request)
+   {
+      $keywords = strtolower($request->input('keywords'));
+      $location = strtolower($request->input('location'));
+
+      $query = Job::query();
+
+      if ($keywords) {
+         $query->where(function ($q) use ($keywords) {
+            $q->whereRaw('LOWER(title) like ?', ['%' . $keywords . '%'])
+               ->orWhereRaw('LOWER(description) like ?', ['%' . $keywords . '%'])
+               ->orWhereRaw('LOWER(tags) like ?', ['%' . $keywords . '%']);
+         });
+      }
+      if ($location) {
+         $query->where(function ($q) use ($location) {
+            $q->whereRaw('LOWER(address) like ?', ['%' . $location . '%'])
+               ->orWhereRaw('LOWER(city) like ?', ['%' . $location . '%']);
+         });
+      }
+      $jobs = $query->paginate(12);
+      return view('jobs.index',[
+         "jobs"=>$jobs
+      ]);
    }
 }

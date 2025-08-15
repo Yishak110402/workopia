@@ -94,11 +94,11 @@
                                     action="{{ route('applicants.store', $job->id) }}">
                                     @csrf
                                     <x-inputs.text-input :required="true" name="full_name" id="full_name"
-                                        label="Full Name" />
+                                        label="Full Name" value="{{auth()->user()->name}}" :disabled="true" />
                                     <x-inputs.text-input :required="false" name="contact_phone" id="contact_phone"
                                         label="Contact Phone" />
                                     <x-inputs.text-input :required="true" name="contact_email" id="contact_email"
-                                        label="Contact Email" />
+                                        label="Contact Email" value="{{auth()->user()->email}}" :disabled="true"/>
                                     <x-inputs.text-area-input id="message" label="Message" name="message" />
                                     <x-inputs.text-input :required="true" name="location" id="location"
                                         label="Location" />

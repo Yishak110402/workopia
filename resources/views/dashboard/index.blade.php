@@ -40,6 +40,38 @@
                         </form>
                     </div>
                 </div>
+                {{-- Applicatns --}}
+                <div class="mt-4">
+                    <h4 class="text-lg font--semibold mb-2">Applicants</h4>
+                    @forelse ($job->applicants as $applicant)
+                        <div class="py-2">
+                            <p class="text-gray-800">
+                                <strong>Name: </strong>{{$applicant->full_name}}
+                            </p>
+                            <p class="text-gray-800">
+                                <strong>Phone Number: </strong>{{$applicant->contact_phone}}
+                            </p>
+                            <p class="text-gray-800">
+                                <strong>Email: </strong>{{$applicant->email}}
+                            </p>
+                            <p class="text-gray-800">
+                                <strong>Message: </strong>{{$applicant->message}}
+                            </p>
+                            <p class="text-gray-800 my-1">
+                                <a href="{{asset('storage/'.$applicant->resume_path)}}" class="text-blue-500 hover:underline" download><i class="fas fa-download"></i> Download Resume</a>
+                            </p>
+                            <form action="{{route('applicants.destroy',$applicant->id)}}" method="POST" onsubmit="return confirm('Are you sure you want to delete thsi applicant?')">
+                                @csrf
+                                @method("DELETE")
+                                <button class="text-red-500 text-sm hover:text-red-700" type="submit">
+                                    <i class="fas fa-trash"></i> Delete Applicant
+                                </button>
+                            </form>
+                        </div>
+                    @empty
+                        <p class="text-gray-700 mb-5">No Applicants for this job</p>
+                    @endforelse
+                </div>
             @empty
                 <p class="text-gray-700">You have no Job Listings</p>
             @endforelse
